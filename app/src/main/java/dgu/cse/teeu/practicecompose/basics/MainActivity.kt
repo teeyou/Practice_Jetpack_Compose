@@ -31,8 +31,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -43,6 +46,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dgu.cse.teeu.practicecompose.R
 import dgu.cse.teeu.practicecompose.ui.theme.PracticeComposeTheme
 
@@ -52,13 +57,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             PracticeComposeTheme {
                 MyApp(modifier = Modifier.fillMaxSize())
-                // A surface container using the 'background' color from the theme
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    MyApp()
-//                }
             }
         }
     }
@@ -67,82 +65,14 @@ class MainActivity : ComponentActivity() {
 @Composable //기본적으로 Modifier를 갖도록 하는게 재사용하기에 좋음
 fun MyApp(modifier: Modifier = Modifier) {
     var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
-    val lazyListState = rememberLazyListState()
+//    val lazyListState = rememberLazyListState()
+//    val viewModel : MainViewModel = viewModel()
 
     if(shouldShowOnboarding)
         OnboardingScreen(modifier) {shouldShowOnboarding = false}
     else
-        Greetings(modifier = modifier,
-            state = lazyListState)
+        Greetings(modifier = modifier)
 }
-@Composable
-fun Greeting(name: String) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
-        ),
-        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
-    ) {
-        CardContent(name)
-    }
-}
-
-//@Composable
-//fun Greeting(name: String, modifier: Modifier = Modifier) {
-//
-//    var expanded by remember { mutableStateOf(false) }
-////    val extraPadding = if (expanded) 48.dp else 0.dp
-//    val extraPadding by animateDpAsState(
-//        if (expanded) 48.dp else 0.dp,
-//        animationSpec = spring(
-//            dampingRatio = Spring.DampingRatioMediumBouncy,
-//            stiffness = Spring.StiffnessLow
-//        )   //spring이외에 tween, repeatable등이 있음
-//    )
-//
-//    Surface(
-////        color = MaterialTheme.colorScheme.primary,
-//        color = MaterialTheme.colorScheme.primary,
-//        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
-//    ) {
-//        Row(modifier = Modifier.padding(24.dp)) {
-//            Column(modifier = Modifier
-//                .weight(1f)
-//                .padding(bottom = extraPadding.coerceAtLeast(0.dp))) {
-//                Text(text = "Hello, ")
-//                Text(text = name, style = MaterialTheme.typography.headlineMedium.copy(
-//                    fontWeight = FontWeight.ExtraBold)) //copy 함수를 이용해서 스타일 변경
-//            }   //coerceAtLeast(0.dp) padding이 음수가 되지 않도록 설정해줘야 함. 앱이 다운 될 수 있음
-//            ElevatedButton(
-//                onClick = { expanded = !expanded }
-//            ) {
-//                Text(if(expanded) "Show less" else "Show more")
-//            }
-//        }
-//    }
-//}
-
-@Composable
-fun Greetings(modifier: Modifier = Modifier,
-              state: LazyListState,
-              names : List<String> = List(20){"$it"}
-) {
-    LazyColumn(modifier.padding(vertical = 4.dp),
-        state = state) {
-//        itemsIndexed(items = names) { index, item ->
-//            Greeting(name = item)
-//        }
-
-        items(items = names) { name ->
-            Greeting(name = name)
-        }
-
-//        for (name in names) {
-//            Greeting(name = name)
-//        }
-    }
-}
-
 
 @Composable
 fun OnboardingScreen(modifier: Modifier = Modifier,
@@ -166,9 +96,32 @@ fun OnboardingScreen(modifier: Modifier = Modifier,
 }
 
 @Composable
-private fun CardContent(name: String) {
-    var expanded by remember { mutableStateOf(false) }
+fun Greetings(modifier: Modifier = Modifier,
+              names : List<String> = List(20){"$it"}
+) {
+    LazyColumn(modifier.padding(vertical = 4.dp)) {
+        itemsIndexed(items = names) { index, item ->
+            Greeting(name = item, idx = index)
+        }
+    }
+}
+@Composable
+fun Greeting(name: String, idx: Int) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        CardContent(name, idx)
+    }
+}
 
+
+@Composable
+private fun CardContent(name: String, idx: Int) {
+//    var expanded by remember { mutableStateOf(false) }
+    val viewModel: MainViewModel = viewModel()
     Row(
         modifier = Modifier
             .padding(12.dp)
@@ -190,17 +143,17 @@ private fun CardContent(name: String) {
                     fontWeight = FontWeight.ExtraBold
                 )
             )
-            if (expanded) {
+            if (/*expanded*/ viewModel.expandedList.value[idx]) {
                 Text(
                     text = ("Composem ipsum color sit lazy, " +
                             "padding theme elit, sed do bouncy. ").repeat(4),
                 )
             }
         }
-        IconButton(onClick = { expanded = !expanded }) {
+        IconButton(onClick = { /*expanded = !expanded*/ viewModel.changeState(idx,!viewModel.expandedList.value[idx]) }) {
             Icon(
-                imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                contentDescription = if (expanded) {
+                imageVector = if (/*expanded*/viewModel.expandedList.value[idx]) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                contentDescription = if (/*expanded*/viewModel.expandedList.value[idx]) {
                     stringResource(R.string.show_less)
                 } else {
                     stringResource(R.string.show_more)
@@ -210,6 +163,20 @@ private fun CardContent(name: String) {
     }
 }
 
+class MainViewModel : ViewModel() {
+    private val _expandedList : MutableState<List<Boolean>> = mutableStateOf(List<Boolean>(20){false})
+    val expandedList : State<List<Boolean>> = _expandedList
+
+    fun changeState(idx: Int, flag: Boolean) {
+        val list = mutableListOf<Boolean>()
+        _expandedList.value.forEach {
+            list.add(it)
+        }
+        list[idx] = flag
+
+        _expandedList.value = list
+    }
+}
 //@Preview(showBackground = true)
 //@Composable
 //fun GreetingPreview() {
