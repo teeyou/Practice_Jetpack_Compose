@@ -64,3 +64,69 @@
   - AlertDialog
     onDismissRequest = { } Dialog 외부 터치하거나, Back 버튼 눌러서 Dismiss 할 때 사용. 아무 동작도 안할거면 비워둔 상태로 사용
 ```
+
+#
+### Theme
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-theming-m2?hl=ko#8)
+<p>
+  <table>
+    <tbody>
+      <tr>
+        <td><img src="https://developer.android.com/static/codelabs/jetpack-compose-theming-m2/img/dd34ccbe5dcdfe58_856.png?hl=ko" width="200" height="400"/></td>
+        <td><img src="https://developer.android.com/static/codelabs/jetpack-compose-theming-m2/img/14515bb612cf4b30_856.png?hl=ko" width="200" height="400"/></td>
+        <td><img src="https://developer.android.com/static/codelabs/jetpack-compose-theming-m2/img/93f55b5d4cffb076_856.png?hl=ko" width="200" height="400"/></td>
+      </tr>
+      <tr>
+        <td>Origin</td>
+        <td>Light Mode</td>
+        <td>Dark Mode</td>
+      </tr>
+    </tbody>
+  </table>
+</p>
+
+```
+* Material Theme
+  - 색상 Color
+  - 서체 Type
+  - 도형 Shape
+  으로 구성되고, Theme.kt 파일에서 사용
+  MaterialTheme(
+  colorScheme = colorScheme,
+          typography = Typography,
+          content = content,
+          shapes = Shapes
+  )
+
+* Surface - 배경화면이나 넓은 범위에서 사용
+* Primary, Secondary, Tetiary - 포그라운드 요소에 점차적으로 강조할 때 사용
+* Container - Button과 같은 포그라운드 요소에서 사용. Text,Icon에서 안씀
+* On - Text, Icon 같은 요소에서 parent color의 위에서 사용
+
+  AppBar - primary
+  FloatingActionButton - secondary
+
+* 새로운 색상을 정의할 때, 정적으로 만들지 않고, 아래처럼 기존 색상을 복사해서 사용하는게 좋음
+  val derivedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
+
+* Surface(
+    color: Color = MaterialTheme.colors.surface,
+    contentColor: Color = contentColorFor(color),
+    . . .
+  )
+  color - 해당 Composable의 색상
+  contentColor - 해당 Composable 안에 있는 content의 색상
+  contentColorFor() 메소드를 쓰면 color에 대응되는 on색상을 가져옴
+
+* Modifier.background를 직접 호출할 때는 주의
+* 요소의 색상을 설정할 때는 Surface를 사용. 알아서 적절한 콘텐츠 색상 CompositionLocal 값을 설정하기 때문에
+  Row(Modifier.background(MaterialTheme.colorScheme.background))
+  -> Surface(color = MaterialTheme.colorScheme.background) {Row()}
+
+* AnnotatedString을 사용하여 텍스트에 여러 스타일을 적용가능
+  val text = buildAnnotatedString { 
+  	append("string") 
+  	withStyle(SpanStyle(color = Color.Red, fontSize = 24.sp)) { append("style") }
+  }
+  Text(text = text, modifier = modifier)
+```
