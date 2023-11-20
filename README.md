@@ -267,3 +267,45 @@ on-color 조합으로 강조
 배경이 surfaceVariant면, Text()는 onSurfaceVariant
 
 ```
+
+#
+### State 02 (Hoisting, Stateless, Stateful, mutableStateList, MVVM)
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-state?hl=ko#12)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_ViewModel_State_02/tree/master/app/src/main/java/dgu/cse/teeu/basicstatecodelab)
+<p align="center">
+  <img src="https://developer.android.com/static/codelabs/jetpack-compose-state/img/e7cc030cd7e8b66f.gif?hl=ko" width="200" height="400"/>
+</p>
+
+```
+* 상태 호이스팅
+remember가 있는 컴포저블은 내부 상태가 포함되어 있어서 재사용성이 적고, 테스트하기 어려움 (Stateful)
+상태 호이스팅을 사용해서 Stateless 컴포저블로 쉽게 만들 수 있음
+컴포저블은 필요한 매개변수만 전달해야 함
+Stateful 컴포저블 안에 여러개의 Stateless 컴포저블을 넣어서 State를 공유할 수 있음 (매개변수에 필요한 것만 넣음)
+
+컴포저블은 작고 재사용 가능해야 함
+
+* LazyColumn을 이용해서 List를 만들 때
+1. data class 정의하고,
+2. Item 컴포저블 정의하고,
+3. List 컴포저블 정의
+결과적으로 Screen 컴포저블에서 상태를 가지고 있고, 이 안에 List 컴포저블이 생성되어서 화면에 표시 (MainActivity -> Screen() -> List() -> Item())
+
+* ViewModel을 이용한 상태관리
+remember 대신 모든 상태관리를 ViewModel에서 관리하도록 하면,
+Stateful 컴포저블이 필요없어짐 (코드가 더 간단해지고 테스트하기 쉬워짐)
+
+* List의 item을 업데이트하고 리컴포지션 시키는 2가지 방법
+1. data class를 class로 변경하고, 변경되는 값을 mutableState<T>로 변경
+
+data class WellnessTask(val id: Int, val label: String, var checked: Boolean = false) 아래처럼 변경
+
+class WellnessTask(val id: Int, val label: String, initialChecked: Boolean = false) {
+    var checked by mutableStateOf(initialChecked)
+}
+
+2. List에서 변경되는 item을 복사하고 삭제한 후에, item을 변경시켜서 다시 추가 (비용이 많이들어서 1번으로 해결하는게 좋음)
+```
+
+#
+
