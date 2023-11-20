@@ -66,7 +66,7 @@
 ```
 
 #
-### Theme
+### Theme (M2)
 - [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-theming-m2?hl=ko#8)
 <p>
   <table>
@@ -129,4 +129,141 @@
   	withStyle(SpanStyle(color = Color.Red, fontSize = 24.sp)) { append("style") }
   }
   Text(text = text, modifier = modifier)
+```
+
+#
+### Theme (M3)
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-theming?hl=ko#8)
+- Material3 theme builder custom (https://m3.material.io/theme-builder#/custom) (팔레트 조합 자동 생성)
+
+<table>
+   <tbody>
+     <tr>
+       <th><img src="https://developer.android.com/static/codelabs/jetpack-compose-theming/img/fddf7b9cc99b1fe3_856.png?hl=ko" width="200" height="400"/></th>
+       <th><img src="https://developer.android.com/static/codelabs/jetpack-compose-theming/img/be7a661b4553167b_856.png?hl=ko" width="200" height="400"/></th>
+       <th><img src="https://developer.android.com/static/codelabs/jetpack-compose-theming/img/e70d762495173610_856.png?hl=ko" width="200" height="400"/></th>
+     </tr>
+     <tr>
+       <th>ReplayApp()</th>
+       <th>AppTheme { ReplayApp() }</th>
+       <th>AppTheme { Surface(tonalElevation = 5.dp) { ReplayApp() }}}</th>
+     </tr>
+      <tr>
+       <th><img src="https://developer.android.com/static/codelabs/jetpack-compose-theming/img/b1b374b801dadc06_856.png?hl=ko" width="200" height="400"/></th>
+       <th><img src="https://developer.android.com/static/codelabs/jetpack-compose-theming/img/70ceac87233fe466_856.png?hl=ko" width="200" height="400"/></th>
+       <th><img src="https://developer.android.com/static/codelabs/jetpack-compose-theming/img/1095e2b2c1ffdc14_856.png?hl=ko" width="200" height="400"/></th>
+     </tr>
+     <tr>
+       <th>검색창 배경 색상</th>
+       <th>플로팅 작업 버튼 색상</th>
+       <th>동적 색상 + 상태표시줄 색상</th>
+     </tr>
+   </tbody>
+</table>
+
+
+```
+* 검색창 배경 색상
+Row(modifier = modifier.background(MaterialTheme.colorScheme.background)) 추가
+
+
+* 플로팅 작업 버튼 색상
+LargeFloatingActionButton(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer, - 컨테이너 색
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer, - 컨텐츠 색
+	onClick = {} ...
+)
+
+
+* 카드 색상
+Card(
+	modifier = modifier... ,
+	colors = CardDefaults.cardColors(
+            containerColor = if (email.isImportant)
+                MaterialTheme.colorScheme.secondaryContainer
+            else 
+	    MaterialTheme.colorScheme.surfaceVariant
+) 	
+{}
+
+
+* 리스트 아이템 배경
+Column(
+	modifier = modifier
+	.fillMaxWidth()
+            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.background)	//순서 중요!
+            .padding(20.dp)
+)
+{	//List item content }
+
+
+* 동적 색상
+동적 색상은 Android 12 이상에서 사용. 시스템 테마와 일관된 환경 제공
+dynamicDarkColorScheme() 또는 dynamicLightColorScheme()을 사용하여 동적 색 구성표를 설정
+그렇지 않은 경우 기본 밝은/어두운 ColorScheme을 사용하는 것으로 대체
+
+
+* 상태표시줄 색상
+val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+
+        darkTheme -> DarkColors
+        else -> LightColors
+    }
+
+    // Add primary status bar color from chosen color scheme.
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.primary.toArgb()	//Light or Dark 모드의 primary로 설정
+            WindowCompat
+                .getInsetsController(window, view)
+                .isAppearanceLightStatusBars = darkTheme
+        }
+    }
+
+
+
+* 서체
+Typography 생성자는 각 스타일의 기본값을 제공하므로 맞춤설정하지 않으려는 매개변수는 생략가능
+현재 앱에 5가지 서체 스타일(headlineSmall, titleLarge, bodyLarge, bodyMedium, labelMedium)을 사용
+Material Design 서체 스케일에서 15개의 기본 스타일 제공
+Text() 컴포저블에 서체를 적용하지 않으면 기본적으로 Typography.bodyLarge로 대체
+
+
+* 도형
+도형 배율에는 다음과 같은 크기의 도형이 있음
+아주 작게
+작게
+보통
+크게
+아주 크게
+
+val shapes = Shapes(
+    extraSmall = RoundedCornerShape(4.dp),
+    small = RoundedCornerShape(8.dp),
+    medium = RoundedCornerShape(16.dp),
+    large = RoundedCornerShape(24.dp),
+    extraLarge = RoundedCornerShape(32.dp)
+)
+
+https://developer.android.com/static/codelabs/jetpack-compose-theming/img/539b114505a1bfed_856.png?hl=ko
+
+도형을 가져오는 Modifier.clip, Modifier.background, Modifier.border 등의 Modifiers를 사용하여 구성요소에 도형을 적용할 수 있음
+Column(modifier.background(color = ... , MaterialTheme.shapes.medium) )
+
+RectangleShape 및 CircleShape으로도 도형 가져올 수 있음
+Row(modifier = modifier.background(color = ... , shape = CircleShape) )
+
+
+* 강조
+on-color 조합으로 강조
+배경이 secondaryContainer 로 설정되면, 그 위에 올라가는건(Text()) 기본적으로 onSecondaryContainer
+배경이 surfaceVariant면, Text()는 onSurfaceVariant
+
 ```
