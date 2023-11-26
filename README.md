@@ -68,6 +68,7 @@
 #
 ### Theme (M2)
 - [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-theming-m2?hl=ko#8)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/ThemingCodelabM2/app/src/main/java/com/codelab/theming) 
 <p>
   <table>
     <tbody>
@@ -134,6 +135,7 @@
 #
 ### Theme (M3)
 - [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-theming?hl=ko#8)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/ThemingCodelab/app/src/main/java/com/example/reply) 
 - Material3 theme builder custom (https://m3.material.io/theme-builder#/custom) (팔레트 조합 자동 생성)
 
 <table>
@@ -358,11 +360,11 @@ restoreState = true
 saveState에 의해 저장된 상태를 복원할지 여부를 결정.
 저장된 state가 없으면 이 옵션은 효과가 없음
 
-*인수 전달
+* 인수 전달
  composable(route = "route/{argument}")
  NavBackStackEntry에서 arguments를 가져올 수 있음
 
-*딥 링크
+* 딥 링크
  앱 내의 특정 대상으로 직접 이동할 수 있는 링크
 
 외부 앱에 딥 링크를 노출하는 것은 기본적으로 사용 설정되지 않아서 
@@ -382,12 +384,58 @@ url은 다음과 같은 형태로 생성됨
 앱이름://컴포저블경로 
 다음으로 해당 컴포저블에서 deepLink 매개변수를 추가해야함
 
-*AppBar의 Up버튼
+* AppBar의 Up버튼
  navController.previousBackStackEntry != null 을 이용해서 Up버튼을 숨기거나 보여줌
 
-*다른 앱으로 이동
+* 다른 앱으로 이동
  인텐트 객체를 만들고 ACTION_SEND 지정
  인텐트와 함께 전송되는 추가 데이터의 유형을 지정 ("text/plain" , "image/*", "video/*" 등)
  putExtra() 메서드로 공유할 텍스트 또는 이미지와 같은 추가 데이터를 인텐트에 전달
  context의 startActivity() 메서드를 호출하여 전달
 ```
+
+#
+### Animation
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-animation?hl=ko#8)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/AnimationCodelab/finished/src/main/java/com/example/android/codelab/animation)
+<p align="center">
+<img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/32364ee6-a390-4ce4-aeaf-0fceda637087" width="200" height="400"/>
+</p>
+
+```
+* 간단한 값 변경 애니메이션
+val backgroundColor = if (tabPage == TabPage.Home) Purple100 else Green300 아래처럼 사용
+val backgroundColor by animateColorAsState(if (tabPage == TabPage.Home) Purple100 else Green300)
+
+* 가시성 애니메이션
+if (extended) { ... } -> AnimatedVisibility(extended) { ... } 로 변경
+FAB가 ScrollDown 되면 icon만 보이고, ScrollUp 되면 icon + Text 가 보이도록 활용
+
+* 위에서 아래로, 아래에서 위로 SlideInOut 하는 애니메이션
+AnimatedVisibility(
+    visible = shown,
+    enter = slideInVertically( initialOffsetY = { fullHeight -> -fullHeight } ),
+    exit = slideOutVertically( targetOffsetY = { fullHeight -> -fullHeight } )
+)
+
+* animationSpec 매개변수를 사용하여 애니메이션을 추가로 맞춤설정
+animationSpec = tween() 이징 곡선을 사용하여 지정된 durationMillis 동안 시작 값과 끝 값 간에 애니메이션을 처리
+
+animationSpec = spring() dampingRatio는 스프링의 탄성. stiffness는 스프링이 종료 값으로 이동하는 속도를 정의
+기본값은 Spring.DampingRatioNoBouncy, Spring.StiffnessMedium
+spring 참고 이미지 - https://developer.android.com/static/images/jetpack/compose/animation-spring.gif?hl=ko
+
+* content의 크기에 따른 애니메이션 animateContentSize
+Column(modifier = Modifier.animateContentSize()){} 을 이용해서 item을 펼치거나 접을 때 애니메이션 적용가능
+
+* Transition API - animate*AsState API를 사용하는 경우에는 불가능한 더 복잡한 애니메이션을 만들 수 있음
+Tab 변경시 Border의 왼쪽, 오른쪽 이동에 활용
+
+* 애니메이션 반복
+animationSpec = infiniteRepeatable() - 데이터 로딩할 때 사용
+
+* 동작 애니메이션
+Animatable
+화면을 터치했을 때 x,y좌표와 이동속도 감지
+```
+
