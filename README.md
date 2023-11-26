@@ -308,4 +308,86 @@ class WellnessTask(val id: Int, val label: String, initialChecked: Boolean = fal
 ```
 
 #
+### Navigation 01 + ViewModel (AppBar with NavigateUp, Intent ACTION_SEND)
+- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-navigation?hl=ko#8)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Navigation_Basics/tree/main/app/src/main/java/com/example/cupcake)
+<p align="center">
+<img src="https://developer.android.com/static/codelabs/basic-android-kotlin-compose-navigation/img/fde052dfa0a1f56a.png?hl=ko" width="200" height="400"/>
+<img src="https://developer.android.com/static/codelabs/basic-android-kotlin-compose-navigation/img/46faceda3f6d7c39.png?hl=ko" width="200" height="400"/>
+<img src="https://developer.android.com/static/codelabs/basic-android-kotlin-compose-navigation/img/f1c19a026527d520.png?hl=ko" width="200" height="400"/>
+</p>
 
+### Navigation 02 (Tab, BackStack, Arguments, DeepLink)
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-navigation?hl=ko#10)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/NavigationCodelab/app/src/main/java/com/example/compose/rally)
+<p align="center">
+<img src="https://developer.android.com/static/codelabs/jetpack-compose-navigation/img/87e7dfa76ef51d50_856.png?hl=ko" width="200" height="400"/>
+<img src="https://developer.android.com/static/codelabs/jetpack-compose-navigation/img/a7c8a51fe2503409_856.png?hl=ko" width="200" height="400"/>
+<img src="https://developer.android.com/static/codelabs/jetpack-compose-navigation/img/9e4c38a6bff0fdbb_856.png?hl=ko" width="200" height="400"/>
+</p>
+
+```
+NavController는 항상 컴포저블 계층 구조의 최상위 수준에서 만들고 배치
+
+Navigation의 세 가지 주요 부분은 NavController, NavGraph, NavHost
+NavHost는 컨테이너 역할을 하며 그래프의 현재 대상을 표시하는 일을 담당
+NavGraph - 이동 가능한 컴포저블 대상을 매핑하는 탐색 그래프
+Scaffold() { NavHost() { composable(route = ""){Screen()} } }
+composable()을 통해서 탐색 그래프에 추가
+
+알아서 BackStack에 쌓여서 Back버튼 누르면 뒤로 감
+
+동일한 tab을 반복해서 누르면 여러번 생성되는 문제가 발생
+아래의 코드로 해결 할 수 있음
+navController.navigate(route) { launchSingleTop = true }
+
+아래처럼 확장함수로 정의해놓고, 
+fun NavHostController.navigateSingleTopTo(route: String) { this.navigate(route) {launchSingleTop = true}}
+
+navController.navigate(route) { launchSingleTop = true } 이 코드를 아래처럼
+navController.navigateSingleTopTo(route) 사용하면 더 좋은 코드
+
+launchSingleTop = true
+- 백 스택에 사본이 최대 1개만 생성. (false라면 동일한 탭을 계속 눌르면 백스택에 누른 만큼 쌓임)
+
+popUpTo(startDestination) { saveState = true } 
+- 여러개의 탭을 선택하면 모든 탭이 백스택에 쌓이지 않게 함. 
+- 시작 탭만 백스택에 추가되어서 시작 탭으로 바로 이동
+
+restoreState = true
+saveState에 의해 저장된 상태를 복원할지 여부를 결정.
+저장된 state가 없으면 이 옵션은 효과가 없음
+
+*인수 전달
+ composable(route = "route/{argument}")
+ NavBackStackEntry에서 arguments를 가져올 수 있음
+
+*딥 링크
+ 앱 내의 특정 대상으로 직접 이동할 수 있는 링크
+
+외부 앱에 딥 링크를 노출하는 것은 기본적으로 사용 설정되지 않아서 
+Manifest에서 <intent-filter> 요소를 추가해야 함
+<activity>
+	...
+
+ <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="앱이름" android:host="호스트에 등록된 컴포저블 경로" />
+    </intent-filter>
+</activity>
+ 
+url은 다음과 같은 형태로 생성됨
+앱이름://컴포저블경로 
+다음으로 해당 컴포저블에서 deepLink 매개변수를 추가해야함
+
+*AppBar의 Up버튼
+ navController.previousBackStackEntry != null 을 이용해서 Up버튼을 숨기거나 보여줌
+
+*다른 앱으로 이동
+ 인텐트 객체를 만들고 ACTION_SEND 지정
+ 인텐트와 함께 전송되는 추가 데이터의 유형을 지정 ("text/plain" , "image/*", "video/*" 등)
+ putExtra() 메서드로 공유할 텍스트 또는 이미지와 같은 추가 데이터를 인텐트에 전달
+ context의 startActivity() 메서드를 호출하여 전달
+```
