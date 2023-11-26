@@ -439,3 +439,58 @@ Animatable
 화면을 터치했을 때 x,y좌표와 이동속도 감지
 ```
 
+#
+### Adaptive Layout (Compact, Medium, Expanded)
+- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-adaptive-content-for-large-screens?hl=ko#6)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Adaptive_Layout/tree/nav-update/app/src/main/java/com/example/reply)
+<p align="center">
+<img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/35d6c504-dd79-489e-a083-214def64433c" width="200" height="400"/>
+<img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/b84a7f88-50a4-4e89-ad9b-06d0607382b8" width="300" height="200"/>
+<img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/2b74a5da-cac9-4ab0-b888-4426e3ca3c6f" width="400" height="200"/>
+</p>
+
+```
+Compact (세로모드) - NavigationBar + 리스트
+Medium (가로모드, 폴더블 폈을 때, 태블릿 세로) - NavigationRail + 리스트
+Expanded (태블릿 가로) - PermanentNavigationDrawer + 리스트 + 디테일
+
+utils 패키지에서 아래와 같이 enum 클래스 정의
+enum class NavigationType {
+    BOTTOM_NAVIGATION, NAVIGATION_RAIL, PERMANENT_NAVIGATION_DRAWER
+}
+enum class ContentType {
+    LIST_ONLY, LIST_AND_DETAIL
+}
+
+MainActivity에서
+val windowSize = calculateWindowSizeClass(this) 
+YourApp(windowSize = windowSize.widthSizeClass)
+
+YourApp() {
+    when (windowSize) {
+        WindowWidthSizeClass.Compact -> {
+            navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
+            contentType = ReplyContentType.LIST_ONLY
+
+        }
+        WindowWidthSizeClass.Medium -> {
+            navigationType = ReplyNavigationType.NAVIGATION_RAIL
+            contentType = ReplyContentType.LIST_ONLY
+
+        }
+        WindowWidthSizeClass.Expanded -> {
+            navigationType = ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
+            contentType = ReplyContentType.LIST_AND_DETAIL
+
+        }
+        else -> {
+            navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
+            contentType = ReplyContentType.LIST_ONLY
+
+        }
+    }
+
+    Screen(navigationType, contentType, ...)
+}
+```
+
