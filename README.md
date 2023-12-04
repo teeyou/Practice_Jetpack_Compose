@@ -1,7 +1,7 @@
 # Practice_Jetpack_Compose
 ## GoogleCodeLabs - https://codelabs.developers.google.com/?cat=Android&text=compose
 ### Basics (ViewModel, LazyColumn, SpringAnimation)
-- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-basics?hl=ko#13)
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-basics?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Practice_Jetpack_Compose/tree/master/app/src/main/java/dgu/cse/teeu/practicecompose/basics)
 <p align="center">
   <img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/637e6ed0-a7f0-4af4-96cf-d7fc966a02ab" width="200" height="400"/>
@@ -10,7 +10,7 @@
 
 #
 ### State (Hoisting, Stateless, TextField, KeyboardOptions, NumberFormat)
-- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-using-state?hl=ko#11)
+- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-using-state?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Practice_Jetpack_Compose/tree/master/app/src/main/java/dgu/cse/teeu/practicecompose/state)
 <p align="center">
   <img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/5b26b93a-202d-4937-9427-01580506e1ef" width="200" height="400"/>
@@ -18,7 +18,7 @@
 
 #
 ### ViewModel & State (UiState, Screen, ViewModel, StateFlow)
-- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-viewmodel-and-state?hl=ko#11)
+- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-viewmodel-and-state?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_ViewModel_State/tree/main/app/src/main/java/com/example/unscramble)
 <p align="center">
   <img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/28cc946c-a81e-4b13-8dac-5546a2edc9ee" width="200" height="400"/>
@@ -67,7 +67,7 @@
 
 #
 ### Theme (M2)
-- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-theming-m2?hl=ko#8)
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-theming-m2?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/ThemingCodelabM2/app/src/main/java/com/codelab/theming) 
 <p>
   <table>
@@ -134,7 +134,7 @@
 
 #
 ### Theme (M3)
-- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-theming?hl=ko#8)
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-theming?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/ThemingCodelab/app/src/main/java/com/example/reply) 
 - Material3 theme builder custom (https://m3.material.io/theme-builder#/custom) (팔레트 조합 자동 생성)
 
@@ -272,7 +272,7 @@ on-color 조합으로 강조
 
 #
 ### State 02 (Hoisting, Stateless, Stateful, mutableStateList, MVVM)
-- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-state?hl=ko#12)
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-state?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_ViewModel_State_02/tree/master/app/src/main/java/dgu/cse/teeu/basicstatecodelab)
 <p align="center">
   <img src="https://developer.android.com/static/codelabs/jetpack-compose-state/img/e7cc030cd7e8b66f.gif?hl=ko" width="200" height="400"/>
@@ -311,7 +311,7 @@ class WellnessTask(val id: Int, val label: String, initialChecked: Boolean = fal
 
 #
 ### Navigation 01 + ViewModel (AppBar with NavigateUp, Intent ACTION_SEND)
-- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-navigation?hl=ko#8)
+- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-navigation?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Navigation_Basics/tree/main/app/src/main/java/com/example/cupcake)
 <p align="center">
 <img src="https://developer.android.com/static/codelabs/basic-android-kotlin-compose-navigation/img/fde052dfa0a1f56a.png?hl=ko" width="200" height="400"/>
@@ -320,7 +320,7 @@ class WellnessTask(val id: Int, val label: String, initialChecked: Boolean = fal
 </p>
 
 ### Navigation 02 (Tab, BackStack, Arguments, DeepLink)
-- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-navigation?hl=ko#10)
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-navigation?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/NavigationCodelab/app/src/main/java/com/example/compose/rally)
 <p align="center">
 <img src="https://developer.android.com/static/codelabs/jetpack-compose-navigation/img/87e7dfa76ef51d50_856.png?hl=ko" width="200" height="400"/>
@@ -396,7 +396,7 @@ url은 다음과 같은 형태로 생성됨
 
 #
 ### Animation
-- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-animation?hl=ko#8)
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-animation?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/AnimationCodelab/finished/src/main/java/com/example/android/codelab/animation)
 <p align="center">
 <img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/32364ee6-a390-4ce4-aeaf-0fceda637087" width="200" height="400"/>
@@ -441,7 +441,7 @@ Animatable
 
 #
 ### Adaptive Layout (Compact, Medium, Expanded)
-- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-adaptive-content-for-large-screens?hl=ko#6)
+- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-adaptive-content-for-large-screens?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Adaptive_Layout/tree/nav-update/app/src/main/java/com/example/reply)
 <p align="center">
 <img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/35d6c504-dd79-489e-a083-214def64433c" width="200" height="400"/>
@@ -496,7 +496,8 @@ YourApp() {
 
 #
 ### Retrofit2 (Serialize, Converter, ViewModel Factory, AppBar ScrollBehavior)
-- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-getting-data-internet?hl=ko#10)
+- [CodeLabs_01 - Retrofit2 Basic](https://developer.android.com/codelabs/basic-android-kotlin-compose-getting-data-internet?hl=ko#0)
+- [CodeLabs_02 - Data Layer, UI Layer, Repository Pattern, DI](https://developer.android.com/codelabs/basic-android-kotlin-compose-add-repository?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Retrofit2/tree/main/app/src/main/java/com/example/marsphotos)
 <p align="center">
 <img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/1b961a7d-0916-48c8-937a-c2bb32016406" width="200" height="400"/>
@@ -525,24 +526,6 @@ dependencies에
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 를 추가해서 사용
-
-
-파라미터를 갖는 ViewModel 생성시 다음과 같이 정의하고 사용함
-MarsViewModel(private val marsPhotosRepository: MarsPhotosRepository) : ViewModel() {
-	...
-
-companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as MarsPhotosApplication)
-                val marsPhotosRepository = application.container.marsPhotosRepository
-                MarsViewModel(marsPhotosRepository = marsPhotosRepository)
-            }
-        }
-    }
-}
-
-val marsViewModel: MarsViewModel = viewModel(factory = MarsViewModel.Factory)
 
 
 네트워크 연결시 다음과 같은 문제 발생할 수 있음
@@ -583,4 +566,34 @@ TopAppBarScrollBehavior 3가지
 1. enterAlwaysScrollBehavior - 사용자가 Scaffold의 내부 콘텐츠를 가져오면 상단 앱 바가 접힙니다. 앱 바는 사용자가 내부 콘텐츠를 끌어내리면 확장됩니다.
 2. exitUntilCollapsedScrollBehavior - enterAlwaysScrollBehavior와 비슷하지만 사용자가 Scaffold 내부 콘텐츠의 끝에 도달하면 앱 바가 추가로 확장됩니다.
 3. pinnedScrollBehavior - 앱 바가 제자리에 유지되고 스크롤에 반응하지 않습니다.
+
+
+데이터 레이어, UI 레이어 분리
+Repository(데이터 레이어), ViewModel(UI 레이어)
+ViewModel이 데이터의 네트워크 요청을 직접 실행하지 않고, Repository가 데이터를 제공
+Repository Pattern + DI를 이용해서 분리
+Repository 이름 지정 규칙은 데이터 유형 + 저장소. 이 앱의 경우 MarsPhotosRepository
+
+DI (의존성 주입)
+코드의 유연성과 적응성을 높이려면 클래스가 종속되는 객체를 인스턴스화하면 안 됨.
+종속되는 객체는 클래스 외부에서 인스턴스화한 후 전달.
+
+ViewModel에 Repository를 전달하기 위해서 다음과 같이 Factory 사용 (기본적으로 ViewModel은 생성자를 가질 수 없어서 생성패턴을 이용)
+
+MarsViewModel(private val marsPhotosRepository: MarsPhotosRepository) : ViewModel() {
+	...
+
+companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as MarsPhotosApplication)
+                val marsPhotosRepository = application.container.marsPhotosRepository
+                MarsViewModel(marsPhotosRepository = marsPhotosRepository)
+            }
+        }
+    }
+}
+
+val marsViewModel: MarsViewModel = viewModel(factory = MarsViewModel.Factory)
+
 ```
