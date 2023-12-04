@@ -494,3 +494,93 @@ YourApp() {
 }
 ```
 
+#
+### Retrofit2 (Serialize, Converter, ViewModel Factory, AppBar ScrollBehavior)
+- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-getting-data-internet?hl=ko#10)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Retrofit2/tree/main/app/src/main/java/com/example/marsphotos)
+<p align="center">
+<img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/1b961a7d-0916-48c8-937a-c2bb32016406" width="200" height="400"/>
+</p>
+
+```
+Json -> 코틀린 객체로 직렬화
+@Serializable
+data class MarsPhoto(
+    val id: String,
+    @SerialName(value = "img_src")
+    val imgSrc: String
+)
+
+Retrofit을 사용할 때 Converter Library로  Gson, Jackson, Moshi 등이 있는데,
+이는 kotlin 문법에서 쓰는 생성자의 Default value를 무시하게 됨.
+그래서 코틀린확장 컨버터를 사용하는게 좋음.
+
+plugins에
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"를 추가하고
+ 
+dependencies에
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+를 추가해서 사용
+
+
+파라미터를 갖는 ViewModel 생성시 다음과 같이 정의하고 사용함
+MarsViewModel(private val marsPhotosRepository: MarsPhotosRepository) : ViewModel() {
+	...
+
+companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as MarsPhotosApplication)
+                val marsPhotosRepository = application.container.marsPhotosRepository
+                MarsViewModel(marsPhotosRepository = marsPhotosRepository)
+            }
+        }
+    }
+}
+
+val marsViewModel: MarsViewModel = viewModel(factory = MarsViewModel.Factory)
+
+
+네트워크 연결시 다음과 같은 문제 발생할 수 있음
+- API에 사용된 URL 또는 URI가 잘못됨
+- 서버를 사용할 수 없어 앱을 서버에 연결할 수 없음	 
+- 네트워크 지연 문제가 있음
+- 기기의 인터넷 연결이 불안정하거나 기기가 인터넷에 연결되지 않음
+
+따라서 네트워크로부터 데이터를 받아올 때, 
+비정상적으로 종료되는 것을 막기 위해서 try-catch를 이용해서 아래처럼 사용
+    fun getMarsPhotos() {
+        viewModelScope.launch {
+            marsUiState = MarsUiState.Loading
+            marsUiState = try {
+                MarsUiState.Success(marsPhotosRepository.getMarsPhotos())
+            } catch (e: IOException) {
+                MarsUiState.Error
+            } catch (e: HttpException) {
+                MarsUiState.Error
+            }
+        }
+    }
+
+
+sealed를 이용해서 클래스를 묶으면
+sealed interface MarsUiState {
+    data class Success(val photos: List<MarsPhoto>) : MarsUiState
+    object Error : MarsUiState
+    object Loading : MarsUiState
+}
+when 에서 else를 안 써도 됨
+
+
+AppBar의 스크롤 동작
+- 공식문서 (https://developer.android.com/jetpack/compose/components/app-bars?hl=ko_)
+
+TopAppBarScrollBehavior 3가지
+1. enterAlwaysScrollBehavior - 사용자가 Scaffold의 내부 콘텐츠를 가져오면 상단 앱 바가 접힙니다. 앱 바는 사용자가 내부 콘텐츠를 끌어내리면 확장됩니다.
+2. exitUntilCollapsedScrollBehavior - enterAlwaysScrollBehavior와 비슷하지만 사용자가 Scaffold 내부 콘텐츠의 끝에 도달하면 앱 바가 추가로 확장됩니다.
+3. pinnedScrollBehavior - 앱 바가 제자리에 유지되고 스크롤에 반응하지 않습니다.
+```
