@@ -600,7 +600,7 @@ val marsViewModel: MarsViewModel = viewModel(factory = MarsViewModel.Factory)
 ```
 
 #
-### Migration (View -> Compose 이전)
+### Migration (View -> Compose 이전, Unsplash API 사용)
 - [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-migration?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/MigrationCodelab/app/src/main/java/com/google/samples/apps/sunflower)
 - [SourceCode - Final](https://github.com/teeyou/Compose_MigrationCodelab_sunflower/tree/main)
@@ -609,19 +609,33 @@ val marsViewModel: MarsViewModel = viewModel(factory = MarsViewModel.Factory)
 </p>
 
 ```
-xml에서 이전하려고 하는 View를 ComposeView로 변경
+* API KEY 세팅
+	local.properties 에서
+	UNSPLASH_ACCESS_KEY="YOUR_API_KEY" 추가
+
+	build.gradle 에서
+	import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties 추가
+	fun getApiKey(propertyKey: String): String = gradleLocalProperties(rootDir).getProperty(propertyKey) 추가
+	buildFeatures { buildConfig = true } 추가
+	defaultConfig { buildConfigField("String", "UNSPLASH_ACCESS_KEY", getApiKey("UNSPLASH_ACCESS_KEY")) } 추가
+	
+	코드에서 BuildConfig.UNSPLASH_ACCESS_KEY 로 API KEY 사용
+
+
+* xml에서 이전하려고 하는 View를 ComposeView로 변경
 <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/compose_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-새로운 kt파일을 만들어서 기존의 View와 동일하도록 Composable 만들고,
+* 새로운 kt파일을 만들어서 기존의 View와 동일하도록 Composable 만들고,
 	MaterialTheme.typography.h5 - textAppearanceHeadline5
 	fillMaxWidth - layout_width 속성의 match_parent 
 	padding(horizontal = ) - marginStart 및 marginEnd 
 	wrapContentWidth(Alignment.CenterHorizontally) - gravity가 center_horizontal
 
-Activity 또는 Fragment 내에서 아래와 같이 setViewCompositionStrategy (Activity 또는 Fragment의 생명주기와 맞춰서 컴포지션),  setContent 작성
+* Activity 또는 Fragment 내에서
+아래와 같이 setViewCompositionStrategy (Activity 또는 Fragment의 생명주기와 맞춰서 컴포지션),  setContent 작성
 binding.apply {
 	...
 
@@ -638,7 +652,7 @@ binding.apply {
             }
  }
 
-Composable에서 LiveData를 관찰하려면 LiveData.observeAsState() 함수 사용
+* Composable에서 LiveData를 관찰하려면 LiveData.observeAsState() 함수 사용
 val plant by plantDetailViewModel.plant.observeAsState()
 
     // If plant is not null, display the content
