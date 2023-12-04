@@ -598,3 +598,52 @@ companion object {
 val marsViewModel: MarsViewModel = viewModel(factory = MarsViewModel.Factory)
 
 ```
+
+#
+### Migration (View -> Compose 이전)
+- [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-migration?hl=ko#0)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/MigrationCodelab/app/src/main/java/com/google/samples/apps/sunflower)
+- [SourceCode - Final](https://github.com/teeyou/Compose_MigrationCodelab_sunflower/tree/main)
+<p align="center">
+<img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/b1ffb576-2b98-43bf-8066-c62cf0c30636" width="200" height="400"/>
+</p>
+
+```
+xml에서 이전하려고 하는 View를 ComposeView로 변경
+<androidx.compose.ui.platform.ComposeView
+                android:id="@+id/compose_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+새로운 kt파일을 만들어서 기존의 View와 동일하도록 Composable 만들고,
+	MaterialTheme.typography.h5 - textAppearanceHeadline5
+	fillMaxWidth - layout_width 속성의 match_parent 
+	padding(horizontal = ) - marginStart 및 marginEnd 
+	wrapContentWidth(Alignment.CenterHorizontally) - gravity가 center_horizontal
+
+Activity 또는 Fragment 내에서 아래와 같이 setViewCompositionStrategy (Activity 또는 Fragment의 생명주기와 맞춰서 컴포지션),  setContent 작성
+binding.apply {
+	...
+
+	composeView.apply {
+                // Dispose the Composition when the view's LifecycleOwner is destroyed
+                setViewCompositionStrategy(
+                    ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+                )
+                setContent {
+                    SunflowerTheme {
+                        PlantDetailDescription(plantDetailViewModel)
+                    }
+                }
+            }
+ }
+
+Composable에서 LiveData를 관찰하려면 LiveData.observeAsState() 함수 사용
+val plant by plantDetailViewModel.plant.observeAsState()
+
+    // If plant is not null, display the content
+    plant?.let {
+        PlantDetailContent(it)
+    }
+
+```
