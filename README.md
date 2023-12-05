@@ -600,7 +600,7 @@ val marsViewModel: MarsViewModel = viewModel(factory = MarsViewModel.Factory)
 ```
 
 #
-### Migration (View -> Compose 이전, Unsplash API 사용)
+### Migration (View -> Compose 이전, Unsplash API 사용, Retrofit2, Tab + Pager, Room, WorkManager, Paging)
 - [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-migration?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Code/tree/main/MigrationCodelab/app/src/main/java/com/google/samples/apps/sunflower)
 - [SourceCode - Final](https://github.com/teeyou/Compose_MigrationCodelab_sunflower/tree/main)
@@ -659,5 +659,103 @@ val plant by plantDetailViewModel.plant.observeAsState()
     plant?.let {
         PlantDetailContent(it)
     }
+
+```
+
+#
+### Room Basics (AppContainer, ViewModelProvider)
+- [CodeLabs 01](https://developer.android.com/codelabs/basic-android-kotlin-compose-persisting-data-room?hl=ko#0)
+- [CodeLabs 02](https://developer.android.com/codelabs/basic-android-kotlin-compose-update-data-room?hl=ko#0)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Room)
+<p align="center">
+<img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/55b4991d-091e-47af-b55d-c92c23e5f1fb" width="200" height="400"/>
+</p>
+
+```
+Room - SQLite 위에 있는 추상화 레이어, 기본구현/복잡성을 숨겨서 사용하기 편리
+
+@PrimaryKey(autoGenerate = true)
+autoGenerate 매개변수를 true로 설정하면 각 항목에 고유한 ID 부여
+
+DAO - 추상 인터페이스를 제공. DB작업 메소드를 모아둠. 단일책임원칙.
+
+@Insert @Delete @Update 주석으로 메소드 정의
+
+나머지 기능에는 편의 주석이 없으므로 @Query 주석을 사용하여 SQLite 쿼리를 직접 작성해야 함
+@Query("SELECT * from items WHERE id = :id")
+fun getItem(id: Int): Flow<Item>
+
+지속성 레이어에서 Flow를 사용하는 것이 좋음
+Flow를 리턴타입으로 쓰면, 데이터베이스의 데이터가 변경될 때마다 알림받음
+Room은 Flow를 자동으로 업데이트
+
+데이터베이스 작업은 시간이 오래 걸릴 수 있으므로 별도의 스레드에서 실행 (코루틴)
+Room은 메인스레드에서 DB 액세스를 허용안함
+
+OnConflictStrategy.IGNORE - 충돌발생시 새 항목 무시
+@Insert(onConflict = OnConflictStrategy.IGNORE)
+suspend fun insert(item: Item)
+
+Entity와 DAO를 이용해서 추상 RoomDatabase 클래스를 만들고 @Database 주석
+RoomDatabase는 싱글톤으로 생성
+
+@Database(entities = [Item::class], version = 1, exportSchema = false)
+exportSchema - 스키마 버전 기록 백업 유지 여부
+
+@Volatile
+private var Instance: InventoryDatabase? = null
+
+휘발성 변수의 값은 캐시되지 않으며 모든 읽기와 쓰기는 기본 메모리에서 이루어짐
+Instance 값이 항상 최신 상태로 유지되고 모든 실행 스레드에 동일하게 유지
+
+동시에 여러 스레드에서 database 인스턴스를 요청할 수 있기 때문에 동기화 작업이 필요 (synchronized)
+fun getDatabase(context: Context): InventoryDatabase {
+            // if the Instance is not null, return it, otherwise create a new database instance.
+            return Instance ?: synchronized(this) {
+                Room.databaseBuilder(context, InventoryDatabase::class.java, "item_database")
+                    .build()
+                    .also { Instance = it }
+            }
+        }
+
+
+interface ItemRepository에 DAO에 매핑되는 함수 작성하고,
+Repository를 구현하는 클래스 생성
+class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository
+itemDao에 상응하는 함수 작성
+
+* AppContainer 클래스
+데이터베이스를 인스턴스화하고 DAO 인스턴스를 OfflineItemsRepository 클래스에 전달
+
+interface AppContainer {
+    val itemsRepository: ItemsRepository
+}
+
+class AppDataContainer(private val context: Context) : AppContainer {
+    override val itemsRepository: ItemsRepository by lazy {
+        OfflineItemsRepository(InventoryDatabase.getDatabase(context).itemDao())
+    }
+}
+
+InventoryApplication 에서 AppDataContainer 인스턴스 생성하고,
+AppViewModelProvider에서 생성자가 있는 ViewModel을 생성하는 Factory 작성해서
+Screen 컴포저블에서 viewModel 사용할 때 Provider의 Factory 사용해서 생성함
+
+아래의 함수를 작성하면 inventoryApplication().container로  AppDataContainer 접근 가능
+fun CreationExtras.inventoryApplication(): InventoryApplication =
+    (this[AndroidViewModelFactory.APPLICATION_KEY] as InventoryApplication)
+
+ViewModel에서 State객체 생성할 때
+var _uiState : MutableState
+val uiState : State
+2개를 만드는 것 대신에 아래처럼 1개의 인스턴스만 생성
+var _uiState
+private set
+
+ViewModel에서 Flow를 노출할 때 권장되는 방법은 StateFlow
+StateFlow를 사용하면 UI 수명 주기와 관계없이 데이터를 저장하고 관찰할 수 있음
+Flow를 StateFlow로 변환하려면 stateIn 연산자 사용
+val homeUiState: StateFlow<HomeUiState> = itemsRepository.getAllItemsStream().map { HomeUiState(it) }
+        .stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS), initialValue = HomeUiState())
 
 ```
