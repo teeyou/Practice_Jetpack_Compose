@@ -759,3 +759,73 @@ val homeUiState: StateFlow<HomeUiState> = itemsRepository.getAllItemsStream().ma
         .stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS), initialValue = HomeUiState())
 
 ```
+
+#
+### WorkManager Basics (Notification, Bitmap, File)
+- [CodeLabs](https://developer.android.com/codelabs/basic-android-kotlin-compose-workmanager?hl=ko#0)
+- [SourceCode](https://github.com/teeyou/Compose_CodeLabs_WorkManager)
+<p align="center">
+<img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/4d9ff37c-72ac-4e4a-a75b-5bf924974017" width="200" height="400"/>
+</p>
+
+```
+* Notification
+- Android 13(Tiramisu)부터 알림권한 기본값이 거부. 명시적으로 알림권한 요청을 해야함
+
+* WorkManager 
+- 비동기 일회성/주기적 작업 지원
+- 네트워크 상태, 저장공간, 충전 상태와 같은 제약 조건 지원
+- 앱 종료해도 실행 보장 (즉시 실행은 보장안함)
+
+* 알아야 할 몇 가지 WorkManager 클래스
+- Worker/CoroutineWorker
+  Worker는 백그라운드 스레드에서 동기식으로 작업
+  CoroutineWorker는 비동기 작업
+
+- WorkRequest
+  worker를 한 번 또는 주기적으로 실행해야 하는지 정의
+  제약 조건은 작업 실행 전에 특정 조건 충족을 요구하는 WorkRequest에 배치
+  WorkRequest를 만드는 과정에서 CoroutineWorker를 전달
+
+- WorkManager
+  실제로 WorkRequest를 예약하고 실행
+  시스템 리소스에 부하를 분산하는 방식으로 WorkRequest를 예약
+
+CoroutineWorker는 기본적으로 Dispatchers.Default로 실행
+withContext()를 호출하고 원하는 디스패처를 전달하여 변경할 수 있음
+doWork() { 
+	return withContext(Dispatchers.IO) { 
+	return@withContext try{} catch{} 
+}}
+
+OneTimeWorkRequest: 한 번만 실행되는 WorkRequest
+PeriodicWorkRequest: 일정 주기로 반복적으로 실행되는 WorkRequest
+
+* Data 객체
+  키-값 쌍의 경량 컨테이너
+  WorkRequest에서 worker 안팎으로 전달될 수 있는 소량의 데이터를 저장하기 위한 것	
+
+URI (여기선 이미지 소스)가 가리키는 콘텐츠를 읽으려면 ContentResolver 객체가 필요
+
+동일하지만 사용하는 라이브러리가 다름
+OneTimeWorkRequest.from(CleanupWorker::class.java) - AndroidX Work 
+OneTimeWorkRequestBuilder<CleanupWorker>().build() - WorkManager KTX 
+
+workManager.enqueue(blurBuilder.build()) - 작업 시작
+
+workManager.beginWith() - 작업 체이닝 할 때 사용
+순차적으로 처리하고, WorkRequest의 출력은 체인에 있는 다음 WorkRequest의 입력으로 사용
+1. var continuation = workManager.beginWith(OneTimeWorkRequest.from(CleanupWorker::class.java))
+2. continuation = continuation.then(blurBuilder.build())
+val save = OneTimeWorkRequestBuilder<SaveImageToFileWorker>().addTag(TAG_OUTPUT).build()
+3. continuation = continuation.then(save)
+continuation.enqueue() - 작업 시작
+
+beginWith(OneTimeWorkRequest) 대신 
+beginUniqueWork(Name, ExistingWorkPolicy, OneTimeWorkRequest)으로 고유 작업 시퀀스를 만들 수 있음
+ExistingWorkPolicy.REPLACE - 기존 시퀀스를 취소하고 새 시퀀스로 교체
+KEEP - 기존 시퀀스를 유지하고 새 요청 무시
+APPEND - 새 시퀀스를 기존 시퀀스에 추가하여 기존 시퀀스의 마지막 작업을 완료한 후에 새 시퀀스의 첫 번째 작업 실행
+
+workManager.cancelUniqueWork(Name) 으로 작업취소
+```
