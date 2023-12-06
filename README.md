@@ -667,11 +667,31 @@ val plant by plantDetailViewModel.plant.observeAsState()
 - [CodeLabs 01](https://developer.android.com/codelabs/basic-android-kotlin-compose-persisting-data-room?hl=ko#0)
 - [CodeLabs 02](https://developer.android.com/codelabs/basic-android-kotlin-compose-update-data-room?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Compose_CodeLabs_Room)
-<p align="center">
-<img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/55b4991d-091e-47af-b55d-c92c23e5f1fb" width="200" height="400"/>
-</p>
+
+<table>
+   <tbody>
+     <tr>
+	<th><img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/55b4991d-091e-47af-b55d-c92c23e5f1fb" width="200" height="400"/></th>
+	<th><img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/47396f11-25f8-4585-a031-3e3cc9119bf3" width="200" height="400"/></th>
+       	<th><img src="https://github.com/teeyou/Practice_Jetpack_Compose/assets/46315397/66d36b4a-707e-4778-abe9-5f2336368e48" width="200" height="400"/></th>
+     </tr>
+     <tr>
+	<th>실행화면</th>
+	<th>AppBar - enterAlwaysScrollBehavior</th>
+	<th>with NestedScroll</th>
+     </tr>
+   </tbody>
+</table>
 
 ```
+Shape.kt 에서 CutCornerShape(topEnd = 8.dp, bottomStart = 8.dp) 정의해서 FAB,Card의 Shape 변경
+TextField 아래의 속성으로 키보드 Done 버튼시 Focus가 다음 TextField로 넘어가도록 설정가능
+singleLine = true,
+keyboardActions = KeyboardActions(onDone = {
+                focusManager.moveFocus(FocusDirection.Next)
+            })
+
+
 Room - SQLite 위에 있는 추상화 레이어, 기본구현/복잡성을 숨겨서 사용하기 편리
 
 @PrimaryKey(autoGenerate = true)
