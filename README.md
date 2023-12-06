@@ -1,5 +1,7 @@
 # Practice_Jetpack_Compose
 ## GoogleCodeLabs - https://codelabs.developers.google.com/?cat=Android&text=compose
+## Compose Document - https://developer.android.com/jetpack/compose/layouts/material?hl=ko
+
 ### Basics (ViewModel, LazyColumn, SpringAnimation)
 - [CodeLabs](https://developer.android.com/codelabs/jetpack-compose-basics?hl=ko#0)
 - [SourceCode](https://github.com/teeyou/Practice_Jetpack_Compose/tree/master/app/src/main/java/dgu/cse/teeu/practicecompose/basics)
